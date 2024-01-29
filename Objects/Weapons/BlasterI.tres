@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=2 format=3 uid="uid://pk6e45ugrrgj"]
+
+[ext_resource type="Script" path="res://Objects/Weapons/WeaponResource.gd" id="1_6oxxt"]
+
+[resource]
+script = ExtResource("1_6oxxt")
+WeaponName = "BlasterI"
+ToggleAnimation = "blasterI-toggle"
+ShootAnimation = "blasterI-shoot"
+ReloadAnimation = "blasterI-reload"
+CurrentAmmo = 2
+ReserveAmmo = 4
+MagazineAmmo = 2
+MaxAmmo = 6
+AutoFire = false
+FireRange = 2000
+Damage = 1
+Type = 1
+ProjectileVelocity = 0

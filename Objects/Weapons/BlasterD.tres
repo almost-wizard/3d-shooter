@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=2 format=3 uid="uid://dh2fx6eoipk4m"]
+
+[ext_resource type="Script" path="res://Objects/Weapons/WeaponResource.gd" id="1_0kn23"]
+
+[resource]
+script = ExtResource("1_0kn23")
+WeaponName = "BlasterD"
+ToggleAnimation = "blasterD-toggle"
+ShootAnimation = "blasterD-shoot"
+ReloadAnimation = "blasterD-reload"
+CurrentAmmo = 30
+ReserveAmmo = 60
+MagazineAmmo = 30
+MaxAmmo = 60
+AutoFire = true
+FireRange = 2000
+Damage = 1
+Type = 1
+ProjectileVelocity = 0
