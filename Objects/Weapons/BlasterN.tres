@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Objects/Weapons/WeaponResource.gd" id="1_pfhdn"]
 [ext_resource type="PackedScene" uid="uid://bqslqmqkbax1m" path="res://Objects/Bullet/Bullet.tscn" id="1_y7ul2"]
-[ext_resource type="PackedScene" uid="uid://25h32g1gs8sp" path="res://Objects/SpawnableWeapons/BlasterN.tscn" id="2_2x3jc"]
+[ext_resource type="PackedScene" uid="uid://25h32g1gs8sp" path="res://Objects/Spawnable/BlasterN.tscn" id="2_uqwak"]
 
 [resource]
 script = ExtResource("1_pfhdn")
@@ -10,6 +10,7 @@ WeaponName = "BlasterN"
 ToggleAnimation = "blasterN-toggle"
 ShootAnimation = "blasterN-shoot"
 ReloadAnimation = "blasterN-reload"
+MeleeAnimation = "blasterN-melee"
 CurrentAmmo = 10
 ReserveAmmo = 10
 MagazineAmmo = 10
@@ -17,7 +18,8 @@ MaxAmmo = 20
 AutoFire = false
 FireRange = 2000
 Damage = 1
+MeleeDamage = 1
 Type = 2
 ProjectileInstance = ExtResource("1_y7ul2")
 ProjectileVelocity = 100
-WeaponDrop = ExtResource("2_2x3jc")
+WeaponDrop = ExtResource("2_uqwak")

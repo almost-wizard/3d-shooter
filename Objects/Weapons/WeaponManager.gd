@@ -54,6 +54,9 @@ func _input(event: InputEvent) -> void:
 	
 	if Input.is_action_just_pressed("weapon_drop"):
 		Drop(CurrentWeapon.WeaponName)
+	
+	if Input.is_action_just_pressed("weapon_melee"):
+		Melee()
 
 
 func Enter() -> void:
@@ -122,16 +125,30 @@ func Shoot() -> void:
 			CurrentWeapon.CurrentAmmo -= 1
 			emit_signal("update_ammo", [CurrentWeapon.CurrentAmmo, CurrentWeapon.ReserveAmmo])
 			
-			var camera_collision = _get_camera_collision()
+			var camera_collision = _get_camera_collision(CurrentWeapon.FireRange)
 			match CurrentWeapon.Type:
 				NULL:
 					print("Weapon type not specified")
 				HITSCAN:
-					HitscanCollision(camera_collision)
+					HitscanCollision(camera_collision[1])
 				PROJECTILE:
-					LaunchProjectile(camera_collision)
+					LaunchProjectile(camera_collision[1])
 	else:
 		Reload()
+
+
+func Melee() -> void:
+	if Animator.get_current_animation() != CurrentWeapon.MeleeAnimation:
+		Animator.play(CurrentWeapon.MeleeAnimation)
+		var camera_collision = _get_camera_collision(CurrentWeapon.MeleeRange)
+		if camera_collision[0]:
+			var dir = (camera_collision[1] - owner.global_transform.origin).normalized()
+			HitscanDamage(
+				camera_collision[0],
+				dir,
+				camera_collision[1],
+				CurrentWeapon.MeleeDamage
+			)
 
 
 func LaunchProjectile(collision_point: Vector3) -> void:
@@ -162,29 +179,39 @@ func HitscanCollision(collision_point: Vector3) -> void:
 	var bullet_collision = get_world_3d().direct_space_state.intersect_ray(_new_intersection)
 	
 	if bullet_collision:
-		_instantiate_hit_indicator(bullet_collision.position)
 		HitscanDamage(
 			bullet_collision.collider,
 			bullet_direction,
-			bullet_collision.position
+			bullet_collision.position,
+			CurrentWeapon.Damage
 		)
 
 
-func HitscanDamage(collider: Node3D, direction: Vector3, _position: Vector3) -> void:
+func HitscanDamage(collider: Node3D, direction: Vector3, _position: Vector3, damage: int) -> void:
 	if collider.is_in_group("Target") and collider.has_method("HitSuccessful"):
-		collider.HitSuccessful(CurrentWeapon.Damage, direction, _position)
+		collider.HitSuccessful(damage, direction, _position)
+
+
+func AddAmmo(weapon_name: String, ammo: int) -> int:
+	var weapon = WeaponsList[weapon_name]
+	var required = weapon.MaxAmmo - weapon.ReserveAmmo
+	var remaining = max(ammo - required, 0)
+	
+	weapon.ReserveAmmo += min(ammo, required)
+	emit_signal("update_ammo", [CurrentWeapon.CurrentAmmo, CurrentWeapon.ReserveAmmo])
+	return remaining
 
 
 func _remove_exclusion(projectile_rid) -> void:
 	CollisionExclude.erase(projectile_rid)
 
 
-func _get_camera_collision() -> Vector3:
+func _get_camera_collision(weapon_range) -> Array:
 	var camera = get_viewport().get_camera_3d()
 	var viewport_size = get_viewport().get_size()
 	
 	var RayOrigin = camera.project_ray_origin(viewport_size / 2)
-	var RayEnd = camera.project_ray_normal(viewport_size / 2) * CurrentWeapon.FireRange
+	var RayEnd = RayOrigin + camera.project_ray_normal(viewport_size / 2) * weapon_range
 	
 	var NewIntersection = PhysicsRayQueryParameters3D.create(RayOrigin, RayEnd)
 	NewIntersection.set_exclude(CollisionExclude)
@@ -192,9 +219,10 @@ func _get_camera_collision() -> Vector3:
 	var Intersection = get_world_3d().direct_space_state.intersect_ray(NewIntersection)
 	
 	if not Intersection.is_empty():
-		return Intersection.position
+		_instantiate_hit_indicator(Intersection.position)
+		return [Intersection.collider, Intersection.position]
 	
-	return RayEnd
+	return [null, RayEnd]
 
 
 func _instantiate_hit_indicator(_position: Vector3) -> void:
@@ -207,15 +235,25 @@ func _instantiate_hit_indicator(_position: Vector3) -> void:
 func _on_pick_up_detection_body_entered(body):
 	if !body.ReadyToPickUp:
 		return
+		
 	if WeaponsStack.find(body.WeaponName) == -1:
-		WeaponsStack.insert(WeaponIndicator, body.WeaponName)
-		
-		WeaponsList[body.WeaponName].CurrentAmmo = body.CurrentAmmo
-		WeaponsList[body.WeaponName].ReserveAmmo = body.ReserveAmmo
-		
-		emit_signal("update_weapon_stack", WeaponsStack)
-		Exit(body.WeaponName)
-		body.queue_free()
+		if body.Type == "Weapon":
+			WeaponsStack.insert(WeaponIndicator, body.WeaponName)
+			
+			WeaponsList[body.WeaponName].CurrentAmmo = body.CurrentAmmo
+			WeaponsList[body.WeaponName].ReserveAmmo = body.ReserveAmmo
+			
+			emit_signal("update_weapon_stack", WeaponsStack)
+			Exit(body.WeaponName)
+			body.queue_free()
+	else:
+		var remaining = AddAmmo(body.WeaponName, body.CurrentAmmo + body.ReserveAmmo)
+		if remaining == 0:
+			if body.Type != "Weapon":
+				body.queue_free()
+		else:
+			body.CurrentAmmo = min(remaining, WeaponsList[body.WeaponName].MagazineAmmo)
+			body.ReserveAmmo = max(0, remaining - body.CurrentAmmo)
 
 
 func _is_player_shooting() -> bool:

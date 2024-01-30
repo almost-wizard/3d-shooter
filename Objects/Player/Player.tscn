@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://ftj8bur3cg8h"]
+[gd_scene load_steps=27 format=3 uid="uid://ftj8bur3cg8h"]
 
 [ext_resource type="Script" path="res://Objects/Player/Player.gd" id="1_0gp6p"]
 [ext_resource type="PackedScene" uid="uid://c7sp7l3lsswwa" path="res://Models/Weapon/Kenney/blasterD.glb" id="2_gidf3"]
@@ -432,15 +432,69 @@ tracks/1/keys = {
 "values": [Vector3(0, -3.14159, 0), Vector3(-0.10472, -3.14159, 0), Vector3(0, -3.14159, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_8imdi"]
+resource_name = "blasterN-melee"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("blasterN:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 30.9099, 1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(0.25268, -1.10715, -2.03444), Vector3(0.25268, -1.10715, -2.03444), Vector3(0, -3.14159, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ufdj0"]
+resource_name = "blasterN-melee"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("blasterI:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 30.91, 1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(0.25268, -1.10715, -2.03444), Vector3(0.25268, -1.10715, -2.03444), Vector3(0, -3.14159, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_xw3qr"]
+resource_name = "blasterN-melee"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("blasterD:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 30.91, 1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(0.25268, -1.10715, -2.03444), Vector3(0.25268, -1.10715, -2.03444), Vector3(0, -3.14159, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_l4uos"]
 _data = {
 "RESET": SubResource("Animation_fit7o"),
+"blasterD-melee": SubResource("Animation_xw3qr"),
 "blasterD-reload": SubResource("Animation_wuup8"),
 "blasterD-shoot": SubResource("Animation_gsoie"),
 "blasterD-toggle": SubResource("Animation_w07oo"),
+"blasterI-melee": SubResource("Animation_ufdj0"),
 "blasterI-reload": SubResource("Animation_27wct"),
 "blasterI-shoot": SubResource("Animation_nvj3w"),
 "blasterI-toggle": SubResource("Animation_a8o1r"),
+"blasterN-melee": SubResource("Animation_8imdi"),
 "blasterN-reload": SubResource("Animation_mwplc"),
 "blasterN-shoot": SubResource("Animation_y8bcf"),
 "blasterN-toggle": SubResource("Animation_lxxof")
@@ -479,7 +533,7 @@ transform = Transform3D(-1, 0, -2.53518e-06, 0, 1, 0, 2.53518e-06, 0, -1, -0.029
 visible = false
 
 [node name="blasterN" parent="CameraHolder/Camera/WeaponManager/Rig" instance=ExtResource("4_tge5a")]
-transform = Transform3D(-1, -2.54876e-07, 2.5214e-06, 9.10479e-09, 0.994562, 0.104147, -2.53423e-06, 0.104147, -0.994562, 0, -1, 0)
+transform = Transform3D(-1, -2.54876e-07, 2.52139e-06, 9.10479e-09, 0.994562, 0.104147, -2.53423e-06, 0.104147, -0.994562, 0, -1, 0)
 visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="CameraHolder/Camera/WeaponManager/Rig"]
