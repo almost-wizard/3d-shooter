@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=3 format=3 uid="uid://xmsag8fhs1cm"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=4 format=3 uid="uid://xmsag8fhs1cm"]
 
 [ext_resource type="Script" path="res://Objects/Weapons/WeaponResource.gd" id="1_pfhdn"]
 [ext_resource type="PackedScene" uid="uid://bqslqmqkbax1m" path="res://Objects/Bullet/Bullet.tscn" id="1_y7ul2"]
+[ext_resource type="PackedScene" uid="uid://25h32g1gs8sp" path="res://Objects/SpawnableWeapons/BlasterN.tscn" id="2_2x3jc"]
 
 [resource]
 script = ExtResource("1_pfhdn")
@@ -19,3 +20,4 @@ Damage = 1
 Type = 2
 ProjectileInstance = ExtResource("1_y7ul2")
 ProjectileVelocity = 100
+WeaponDrop = ExtResource("2_2x3jc")

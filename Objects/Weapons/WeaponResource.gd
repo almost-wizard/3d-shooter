@@ -21,3 +21,5 @@ class_name WeaponResource
 @export_flags("Hitscan", "Projectile") var Type
 @export var ProjectileInstance: PackedScene
 @export var ProjectileVelocity: int
+
+@export var WeaponDrop: PackedScene

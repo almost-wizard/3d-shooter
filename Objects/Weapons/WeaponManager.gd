@@ -36,7 +36,7 @@ func _ready() -> void:
 
 
 func _process(delta):	
-	if IsPlayerShooting():
+	if _is_player_shooting():
 		Shoot()
 
 
@@ -51,6 +51,9 @@ func _input(event: InputEvent) -> void:
 
 	if Input.is_action_pressed("weapon_reload"):
 		Reload()
+	
+	if Input.is_action_just_pressed("weapon_drop"):
+		Drop(CurrentWeapon.WeaponName)
 
 
 func Enter() -> void:
@@ -77,11 +80,22 @@ func _on_animation_player_animation_finished(anim_name):
 		ChangeWeapon(NextWeapon)
 
 
-func IsPlayerShooting() -> bool:
-	if CurrentWeapon.AutoFire:
-		return Input.is_action_pressed("shoot")
-	else:
-		return Input.is_action_just_pressed("shoot")
+func Drop(_name: String) -> void:
+	if WeaponsStack.size() <= 1:
+		return
+	var ref = WeaponsStack.find(_name)
+	if ref != -1:
+		WeaponsStack.pop_at(ref)
+		emit_signal("update_weapon_stack", WeaponsStack)
+		
+		var dropped_weapon = WeaponsList[_name].WeaponDrop.instantiate()
+		dropped_weapon.CurrentAmmo = WeaponsList[_name].CurrentAmmo
+		dropped_weapon.ReserveAmmo = WeaponsList[_name].ReserveAmmo
+		dropped_weapon.set_global_transform(BulletPoint.get_global_transform())
+		var world = get_tree().get_root().get_child(0)
+		world.add_child(dropped_weapon)
+		
+		Exit(WeaponsStack[0])
 
 
 func Reload() -> void:
@@ -128,7 +142,7 @@ func LaunchProjectile(collision_point: Vector3) -> void:
 	
 	var ProjectileRID = Projectile.get_rid()
 	CollisionExclude.push_front(ProjectileRID)
-	Projectile.tree_exited.connect(RemoveExclusion.bind(ProjectileRID))
+	Projectile.tree_exited.connect(_remove_exclusion.bind(ProjectileRID))
 	
 	BulletPoint.add_child(Projectile)
 	Projectile.Launch(
@@ -161,7 +175,7 @@ func HitscanDamage(collider: Node3D, direction: Vector3, _position: Vector3) -> 
 		collider.HitSuccessful(CurrentWeapon.Damage, direction, _position)
 
 
-func RemoveExclusion(projectile_rid) -> void:
+func _remove_exclusion(projectile_rid) -> void:
 	CollisionExclude.erase(projectile_rid)
 
 
@@ -190,5 +204,22 @@ func _instantiate_hit_indicator(_position: Vector3) -> void:
 	hit_indicator.global_translate(_position)
 
 
+func _on_pick_up_detection_body_entered(body):
+	if !body.ReadyToPickUp:
+		return
+	if WeaponsStack.find(body.WeaponName) == -1:
+		WeaponsStack.insert(WeaponIndicator, body.WeaponName)
+		
+		WeaponsList[body.WeaponName].CurrentAmmo = body.CurrentAmmo
+		WeaponsList[body.WeaponName].ReserveAmmo = body.ReserveAmmo
+		
+		emit_signal("update_weapon_stack", WeaponsStack)
+		Exit(body.WeaponName)
+		body.queue_free()
 
 
+func _is_player_shooting() -> bool:
+	if CurrentWeapon.AutoFire:
+		return Input.is_action_pressed("shoot")
+	else:
+		return Input.is_action_just_pressed("shoot")

@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=2 format=3 uid="uid://pk6e45ugrrgj"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=3 format=3 uid="uid://pk6e45ugrrgj"]
 
 [ext_resource type="Script" path="res://Objects/Weapons/WeaponResource.gd" id="1_6oxxt"]
+[ext_resource type="PackedScene" uid="uid://8shh3kcw01ej" path="res://Objects/SpawnableWeapons/BlasterI.tscn" id="1_nish2"]
 
 [resource]
 script = ExtResource("1_6oxxt")
@@ -17,3 +18,4 @@ FireRange = 2000
 Damage = 1
 Type = 1
 ProjectileVelocity = 0
+WeaponDrop = ExtResource("1_nish2")

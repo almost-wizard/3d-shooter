@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://ftj8bur3cg8h"]
+[gd_scene load_steps=24 format=3 uid="uid://ftj8bur3cg8h"]
 
 [ext_resource type="Script" path="res://Objects/Player/Player.gd" id="1_0gp6p"]
 [ext_resource type="PackedScene" uid="uid://c7sp7l3lsswwa" path="res://Models/Weapon/Kenney/blasterD.glb" id="2_gidf3"]
@@ -76,6 +76,30 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector3(0.121114, -0.146332, -0.68751)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("blasterI:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.0293095, -0.186147, -0.403097)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("blasterI:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_wuup8"]
@@ -379,6 +403,35 @@ tracks/3/keys = {
 "values": [Vector3(0.120077, -0.109642, -0.549233)]
 }
 
+[sub_resource type="Animation" id="Animation_nvj3w"]
+resource_name = "blasterN-shoot"
+length = 0.2
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("blasterI:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.04, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.0293095, -0.186147, -0.403097), Vector3(-0.0293095, -0.186147, -0.355785), Vector3(-0.0293095, -0.186147, -0.403097)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("blasterI:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.04, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(-0.10472, -3.14159, 0), Vector3(0, -3.14159, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_l4uos"]
 _data = {
 "RESET": SubResource("Animation_fit7o"),
@@ -386,11 +439,15 @@ _data = {
 "blasterD-shoot": SubResource("Animation_gsoie"),
 "blasterD-toggle": SubResource("Animation_w07oo"),
 "blasterI-reload": SubResource("Animation_27wct"),
+"blasterI-shoot": SubResource("Animation_nvj3w"),
 "blasterI-toggle": SubResource("Animation_a8o1r"),
 "blasterN-reload": SubResource("Animation_mwplc"),
 "blasterN-shoot": SubResource("Animation_y8bcf"),
 "blasterN-toggle": SubResource("Animation_lxxof")
 }
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p6mci"]
+size = Vector3(1.5, 0.855, 1.5)
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
@@ -418,7 +475,7 @@ transform = Transform3D(-1, -2.32103e-07, 2.52376e-06, 8.29101e-09, 0.995493, 0.
 visible = false
 
 [node name="blasterI" parent="CameraHolder/Camera/WeaponManager/Rig" instance=ExtResource("3_n32fo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.619718, 0)
+transform = Transform3D(-1, 0, -2.53518e-06, 0, 1, 0, 2.53518e-06, 0, -1, -0.0293095, -0.186147, -0.403097)
 visible = false
 
 [node name="blasterN" parent="CameraHolder/Camera/WeaponManager/Rig" instance=ExtResource("4_tge5a")]
@@ -479,7 +536,16 @@ grow_vertical = 2
 texture = ExtResource("10_ygoxp")
 stretch_mode = 3
 
+[node name="PickUpDetection" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PickUpDetection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.424408, 0)
+shape = SubResource("BoxShape3D_p6mci")
+
 [connection signal="update_ammo" from="CameraHolder/Camera/WeaponManager" to="CanvasLayer" method="_on_weapon_manager_update_ammo"]
 [connection signal="update_weapon_stack" from="CameraHolder/Camera/WeaponManager" to="CanvasLayer" method="_on_weapon_manager_update_weapon_stack"]
 [connection signal="weapon_change" from="CameraHolder/Camera/WeaponManager" to="CanvasLayer" method="_on_weapon_manager_weapon_change"]
 [connection signal="animation_finished" from="CameraHolder/Camera/WeaponManager/Rig/AnimationPlayer" to="CameraHolder/Camera/WeaponManager" method="_on_animation_player_animation_finished"]
+[connection signal="body_entered" from="PickUpDetection" to="CameraHolder/Camera/WeaponManager" method="_on_pick_up_detection_body_entered"]

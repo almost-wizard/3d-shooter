@@ -9,8 +9,11 @@ func _on_weapon_manager_update_ammo(_ammo):
 func _on_weapon_manager_update_weapon_stack(_weapon_stack):
 	var WeaponStackLabel = $VBoxContainer/HBoxContainer3/WeaponStack
 	WeaponStackLabel.set_text(&"")
-	for i in _weapon_stack:
-		WeaponStackLabel.text += &"\n" + i
+	for i in _weapon_stack.size():
+		WeaponStackLabel.text += _weapon_stack[i]
+		if i != _weapon_stack.size() - 1:
+			WeaponStackLabel.text += &"\n"
+		
 
 
 func _on_weapon_manager_weapon_change(_weapon_name):
