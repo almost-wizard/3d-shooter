@@ -19,6 +19,7 @@ AutoFire = false
 FireRange = 2000
 Damage = 1
 MeleeDamage = 1
+MeleeRange = 1.5
 Type = 2
 ProjectileInstance = ExtResource("1_y7ul2")
 ProjectileVelocity = 100
